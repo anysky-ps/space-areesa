@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>SPACE AREESA - スペース・アリーサ</title>
+    <meta name="description" content="SPACE AREESA - 縦スクロールシューティングゲーム。宇宙を舞台に、アリーサが仲間を救出する！">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Zen+Maru+Gothic:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+
+        <!-- Title Screen -->
+        <div id="title-screen" class="screen active">
+            <div class="title-content">
+                <h1 class="game-title">
+                    <span class="title-space">SPACE</span>
+                    <span class="title-areesa">AREESA</span>
+                </h1>
+                <p class="title-sub">スペース・アリーサ</p>
+                <div class="difficulty-select">
+                    <p class="select-label">- SELECT DIFFICULTY -</p>
+                    <button class="diff-btn" data-difficulty="easy">
+                        <span class="diff-star">★</span> EASY
+                    </button>
+                    <button class="diff-btn" data-difficulty="normal">
+                        <span class="diff-star">★★</span> NORMAL
+                    </button>
+                    <button class="diff-btn" data-difficulty="hard">
+                        <span class="diff-star">★★★</span> HARD
+                    </button>
+                </div>
+                <p class="high-score-display">HIGH SCORE: <span id="title-highscore">0</span></p>
+            </div>
+        </div>
+
+        <!-- Stage Intro -->
+        <div id="stage-intro" class="screen">
+            <div class="stage-intro-content">
+                <p class="stage-label">STAGE</p>
+                <p class="stage-number" id="stage-number">1</p>
+                <p class="stage-name" id="stage-name">陽光噴水</p>
+            </div>
+        </div>
+
+        <!-- Stage Clear / Rescue Dialog -->
+        <div id="rescue-dialog" class="screen">
+            <div class="rescue-content">
+                <p class="rescue-title">STAGE CLEAR!</p>
+                <div id="rescue-friends"></div>
+                <button class="next-btn" id="next-stage-btn">NEXT STAGE →</button>
+            </div>
+        </div>
+
+        <style>
+            /* Friends Rescue */
+            #rescue-dialog {
+                display: none;
+                /* Default hidden */
+                justify-content: center;
+                align-items: center;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 100;
+            }
+
+            #rescue-dialog.active {
+                display: flex;
+                /* Show only when active */
+            }
+
+            .rescue-content {
+                display: flex;
+                /* Flexbox for internal layout */
+                flex-direction: column;
+                background: rgba(0, 0, 0, 0.9);
+                border: 2px solid #ffcc00;
+                border-radius: 15px;
+                padding: 20px;
+                width: 90%;
+                max-width: 400px;
+                max-height: 90%;
+                /* Crucial: Don't exceed screen height */
+                box-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
+                box-sizing: border-box;
+                /* Include padding in width/height */
+            }
+
+            .rescue-title {
+                font-size: 1.5rem;
+                color: #ffcc00;
+                margin-bottom: 15px;
+                flex-shrink: 0;
+                /* Title shouldn't shrink */
+            }
+
+            #rescue-friends {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                flex: 1;
+                /* Take all available remaining space */
+                overflow-y: auto;
+                /* Scroll if content overflows this space */
+                min-height: 100px;
+                /* Minimum height for the list */
+                margin-bottom: 15px;
+                padding: 5px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 8px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .friend-card {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 10px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                width: 95%;
+                flex-shrink: 0;
+                /* Cards shouldn't shrink */
+            }
+
+            .friend-image-large {
+                width: auto;
+                max-width: 80%;
+                height: auto;
+                max-height: 150px;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                border: 2px solid #fff;
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+                object-fit: contain;
+            }
+
+            .friend-name {
+                font-size: 1.1rem;
+                color: #ffcc00;
+                margin-bottom: 5px;
+                text-align: center;
+            }
+
+            .friend-comment {
+                font-style: italic;
+                color: #eee;
+                font-size: 0.9rem;
+                text-align: center;
+            }
+
+            .next-btn {
+                padding: 15px 30px;
+                font-size: 1.2rem;
+                background: linear-gradient(to bottom, #ffcc00, #ffaa00);
+                border: none;
+                border-radius: 30px;
+                color: #000;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow: 0 5px 15px rgba(255, 204, 0, 0.4);
+                transition: transform 0.1s;
+                font-family: 'Press Start 2P', cursive;
+                flex-shrink: 0;
+                /* Button shouldn't shrink */
+                margin-top: auto;
+                /* Push to bottom if space permits, though flex:1 on list does this */
+            }
+
+            .next-btn:active {
+                transform: scale(0.95);
+            }
+        </style>
+
+        <!-- Game Over -->
+        <div id="gameover-screen" class="screen">
+            <div class="gameover-content">
+                <h2 class="gameover-title">GAME OVER</h2>
+                <div class="result-box">
+                    <p>SCORE: <span id="final-score">0</span></p>
+                    <p>HIGH SCORE: <span id="final-highscore">0</span></p>
+                    <p>STAGE: <span id="final-stage">1</span></p>
+                </div>
+                <button class="retry-btn" id="retry-btn">RETRY</button>
+                <button class="title-btn" id="to-title-btn">TITLE</button>
+            </div>
+        </div>
+
+        <!-- All Clear -->
+        <div id="allclear-screen" class="screen">
+            <div class="allclear-content">
+                <h2 class="allclear-title">🎉 ALL CLEAR! 🎉</h2>
+                <p class="allclear-sub">全員救出完了！</p>
+                <div class="result-box">
+                    <p>FINAL SCORE: <span id="allclear-score">0</span></p>
+                    <p>HIGH SCORE: <span id="allclear-highscore">0</span></p>
+                </div>
+                <button class="title-btn" id="allclear-title-btn">TITLE</button>
+            </div>
+        </div>
+
+        <!-- Ending Screen -->
+        <div id="ending-screen" class="screen">
+            <div class="ending-content">
+                <div class="ending-image-container" id="ending-chars">
+                    <!-- Images will be dynamically added here -->
+                </div>
+                <p class="ending-text">
+                    アリーサは7人の仲間たちを救い、<br>
+                    宇宙の平和を取り戻しました。<br>
+                    <br>
+                    そう、これがのちの…ラフラフなのであった。
+                </p>
+                <div class="credits-section">
+                    <p class="credit-role">GAME DESIGN & PROGRAMMING</p>
+                    <p class="credit-name">えにすけ=ポジティブ・シャワー</p>
+                    <p class="credit-role">MUSIC</p>
+                    <p class="credit-name">えにすけ=ポジティブ・シャワー</p>
+                    <p class="credit-role">Character Design</p>
+                    <p class="credit-name">ありさっさ</p>
+                    <p class="credit-role">Special Thanks</p>
+                    <p class="credit-name">ありさっさ</p>
+                </div>
+                <button class="title-btn" id="ending-title-btn">TITLE</button>
+            </div>
+        </div>
+        <!-- HUD -->
+        <div id="hud" class="hud hidden">
+            <div class="hud-left">
+                <div id="lives-display"></div>
+            </div>
+            <div class="hud-center">
+                <span id="hud-stage"></span>
+            </div>
+            <div class="hud-right">
+                <span id="hud-score">0</span>
+                <button id="pause-btn" class="pause-btn">||</button>
+            </div>
+        </div>
+
+        <!-- Pause Overlay -->
+        <div id="pause-overlay" class="screen">
+            <p class="pause-text">PAUSED</p>
+            <button id="resume-btn" class="resume-btn">RESUME</button>
+            <button id="quit-btn" class="quit-btn">TITLE</button>
+        </div>
+
+        <!-- Touch to Start overlay -->
+        <div id="touch-start-overlay" class="screen">
+            <p class="touch-text">TAP TO START</p>
+        </div>
+
+    </div><!-- Close game-container -->
+
+    <script src="js/utils.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/input.js"></script>
+    <script src="js/background.js"></script>
+    <script src="js/effects.js"></script>
+    <script src="js/bullets.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/enemies.js"></script>
+    <script src="js/items.js"></script>
+    <script src="js/stages.js"></script>
+    <script src="js/hud.js"></script>
+    <script src="js/debug.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

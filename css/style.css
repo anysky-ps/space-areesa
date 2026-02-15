@@ -1,0 +1,876 @@
+/* ===== SPACE AREESA - Style System ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    touch-action: none;
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+}
+
+#game-canvas {
+    display: block;
+    background: #0a0a1a;
+    touch-action: none;
+}
+
+/* ===== Screen Overlays ===== */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+    /* Default none for non-active */
+}
+
+.screen.active {
+    display: flex;
+    pointer-events: auto;
+    /* Enable for active */
+    z-index: 100;
+    /* Boost z-index to be on top of everything */
+}
+
+/* Ensure buttons are always clickable */
+button,
+.title-btn,
+.next-btn,
+.retry-btn {
+    pointer-events: auto;
+    cursor: pointer;
+    position: relative;
+    z-index: 101;
+}
+
+/* ===== Title Screen ===== */
+#title-screen {
+    background: radial-gradient(ellipse at center, rgba(30, 10, 60, 0.95) 0%, rgba(5, 2, 15, 0.98) 100%);
+}
+
+.title-content {
+    text-align: center;
+    padding: 20px;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.game-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 10px;
+}
+
+.title-space {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(18px, 5vw, 32px);
+    color: #a0d4ff;
+    letter-spacing: 0.3em;
+    text-shadow: 0 0 20px rgba(160, 212, 255, 0.6), 0 0 40px rgba(160, 212, 255, 0.3);
+}
+
+.title-areesa {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(28px, 8vw, 52px);
+    background: linear-gradient(135deg, #ff69b4, #da70d6, #9370db, #69c0ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 15px rgba(218, 112, 214, 0.5));
+    animation: titlePulse 2s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 15px rgba(218, 112, 214, 0.5));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 30px rgba(218, 112, 214, 0.8));
+    }
+}
+
+.title-sub {
+    font-size: clamp(12px, 3vw, 18px);
+    color: #c9a0dc;
+    margin-bottom: 30px;
+    letter-spacing: 0.2em;
+}
+
+.select-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 2vw, 12px);
+    color: #888;
+    margin-bottom: 15px;
+    letter-spacing: 0.1em;
+}
+
+.difficulty-select {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.diff-btn {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 700;
+    font-size: clamp(14px, 3.5vw, 20px);
+    padding: 12px 40px;
+    width: 220px;
+    border: 2px solid rgba(180, 130, 255, 0.4);
+    border-radius: 25px;
+    background: rgba(60, 20, 100, 0.6);
+    color: #e0c0ff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    letter-spacing: 0.1em;
+}
+
+.diff-btn:hover,
+.diff-btn:active {
+    background: rgba(120, 50, 200, 0.7);
+    border-color: rgba(220, 170, 255, 0.7);
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(180, 130, 255, 0.4);
+}
+
+.diff-star {
+    color: #ffd700;
+}
+
+.high-score-display {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 2vw, 12px);
+    color: #ffd700;
+    letter-spacing: 0.05em;
+}
+
+/* ===== Stage Intro ===== */
+#stage-intro {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.stage-intro-content {
+    text-align: center;
+    animation: stageZoomIn 0.6s ease-out;
+}
+
+@keyframes stageZoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.stage-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(12px, 3vw, 18px);
+    color: #a0d4ff;
+    letter-spacing: 0.3em;
+}
+
+.stage-number {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(48px, 15vw, 80px);
+    color: #fff;
+    text-shadow: 0 0 30px rgba(160, 212, 255, 0.7);
+    line-height: 1.2;
+}
+
+.stage-name {
+    font-size: clamp(20px, 5vw, 32px);
+    font-weight: 900;
+    color: #ffb7d5;
+    letter-spacing: 0.2em;
+    text-shadow: 0 0 15px rgba(255, 183, 213, 0.5);
+}
+
+/* ===== Rescue Dialog ===== */
+#rescue-dialog {
+    background: rgba(0, 0, 20, 0.85);
+    backdrop-filter: blur(5px);
+}
+
+.rescue-content {
+    text-align: center;
+    padding: 20px;
+    max-width: 90%;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.rescue-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(16px, 5vw, 28px);
+    color: #ffd700;
+    margin-bottom: 25px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    animation: clearPulse 1s ease-in-out infinite;
+}
+
+/* ===== Ending Screen Specifics ===== */
+.ending-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    overflow-y: auto;
+    /* Allow scrolling if content is too tall */
+    padding: 20px 0;
+}
+
+.ending-image-container {
+    width: 100%;
+    max-width: 500px;
+    height: 50vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.ending-char-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ending-main-img {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+    border: 3px solid #ffd700;
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.ending-text {
+    font-size: clamp(14px, 4vw, 18px);
+    color: #fff;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+}
+
+.credits-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.credit-role {
+    font-size: 10px;
+    color: #aaa;
+    letter-spacing: 0.2em;
+    margin-bottom: 5px;
+}
+
+.credit-name {
+    font-size: 16px;
+    color: #ffb7d5;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+
+.friend-name {
+    font-size: clamp(14px, 3.5vw, 20px);
+    font-weight: 900;
+    color: #ff99cc;
+    margin-bottom: 8px;
+}
+
+.friend-comment {
+    font-size: clamp(12px, 3vw, 16px);
+    color: #e0d0f0;
+    line-height: 1.5;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border-left: 3px solid #ff69b4;
+}
+
+.next-btn,
+.retry-btn,
+.title-btn {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 700;
+    font-size: clamp(14px, 3.5vw, 18px);
+    padding: 12px 30px;
+    margin: 8px;
+    border: 2px solid rgba(255, 180, 220, 0.5);
+    border-radius: 25px;
+    background: rgba(200, 50, 150, 0.5);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.next-btn:hover,
+.next-btn:active,
+.retry-btn:hover,
+.retry-btn:active,
+.title-btn:hover,
+.title-btn:active {
+    background: rgba(200, 50, 150, 0.8);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(200, 50, 150, 0.4);
+}
+
+/* ===== Game Over ===== */
+#gameover-screen {
+    background: rgba(10, 0, 0, 0.9);
+}
+
+.gameover-content {
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.gameover-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(24px, 7vw, 40px);
+    color: #ff4444;
+    margin-bottom: 25px;
+    text-shadow: 0 0 30px rgba(255, 68, 68, 0.6);
+}
+
+.result-box {
+    background: rgba(30, 10, 50, 0.7);
+    border: 1px solid rgba(180, 130, 255, 0.3);
+    border-radius: 12px;
+    padding: 20px 30px;
+    margin: 20px auto;
+    display: inline-block;
+}
+
+.result-box p {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(10px, 2.5vw, 14px);
+    color: #c0d0ff;
+    margin: 8px 0;
+    letter-spacing: 0.05em;
+}
+
+/* ===== All Clear ===== */
+#allclear-screen {
+    background: radial-gradient(ellipse at center, rgba(60, 20, 100, 0.95) 0%, rgba(10, 0, 30, 0.98) 100%);
+}
+
+.allclear-content {
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.allclear-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(20px, 6vw, 36px);
+    color: #ffd700;
+    margin-bottom: 10px;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+    animation: clearPulse 1.5s ease-in-out infinite;
+}
+
+.allclear-sub {
+    font-size: clamp(16px, 4vw, 24px);
+    color: #ffb7d5;
+    margin-bottom: 20px;
+}
+
+/* ===== HUD ===== */
+.hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.hud.hidden {
+    display: none;
+}
+
+.hud-left,
+.hud-center,
+.hud-right {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 2vw, 12px);
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+#lives-display {
+    display: flex;
+    gap: 4px;
+}
+
+.life-icon {
+    width: clamp(14px, 3vw, 20px);
+    height: clamp(14px, 3vw, 20px);
+    background: #c070ff;
+    border-radius: 50%;
+    border: 1.5px solid #e0b0ff;
+    box-shadow: 0 0 6px rgba(192, 112, 255, 0.5);
+}
+
+.life-icon.lost {
+    background: #333;
+    border-color: #555;
+    box-shadow: none;
+}
+
+#hud-score {
+    color: #ffd700;
+}
+
+.pause-btn {
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid #fff;
+    color: #fff;
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 15px;
+    /* Spacing from score */
+    cursor: pointer;
+}
+
+/* ===== Pause Overlay ===== */
+#pause-overlay {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pause-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 32px;
+    color: #fff;
+    letter-spacing: 0.2em;
+    animation: pulse 1s infinite alternate;
+}
+
+.resume-btn,
+.quit-btn {
+    font-family: 'Press Start 2P', monospace;
+    padding: 15px 30px;
+    background: #444;
+    color: #fff;
+    border: 2px solid #888;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.resume-btn:hover {
+    background: #666;
+}
+
+.quit-btn:hover {
+    background: #600;
+    border-color: #f00;
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.1);
+    }
+}
+
+/* ===== Touch Overlay ===== */
+#touch-start-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 15;
+}
+
+.touch-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 4vw, 22px);
+    color: #fff;
+    animation: blink 1.2s ease-in-out infinite;
+    letter-spacing: 0.2em;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+/* Responsive adjustments */
+@media (min-aspect-ratio: 9/16) {
+    #game-canvas {
+        height: 100%;
+        width: auto;
+    }
+}
+
+@media (max-aspect-ratio: 9/16) {
+    #game-canvas {
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* ===== Cinematic Ending & Staff Roll ===== */
+.ending-slide-img {
+    max-width: 80%;
+    max-height: 50vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    animation: slideZoom 4s ease-out forwards;
+    position: absolute;
+    opacity: 0;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    border: 3px solid #fff;
+    z-index: 10;
+}
+
+.ending-slide-name {
+    position: absolute;
+    bottom: 25%;
+    font-family: 'Press Start 2P', monospace;
+    color: #ffd700;
+    font-size: clamp(20px, 5vw, 40px);
+    text-shadow: 0 0 10px #ff00de;
+    opacity: 0;
+    animation: slideText 4s ease-out forwards;
+    z-index: 11;
+    width: 100%;
+    text-align: center;
+}
+
+@keyframes slideZoom {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    10% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+
+    80% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
+@keyframes slideText {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    80% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* Staff Roll */
+.ending-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    /* Fill screen */
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: scroll;
+    /* Allow scrolling within this container */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+    /* Mobile Safari elastic bounce can be annoying, let's stabilize it */
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 80vh;
+    /* Extra space to ensure we can scroll past everything */
+}
+
+.ending-content::-webkit-scrollbar {
+    display: none;
+}
+
+/* ===== Ending Sequence Updates ===== */
+.ending-narration {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: clamp(16px, 4vw, 24px);
+    color: #fff;
+    text-align: center;
+    line-height: 1.8;
+    margin: 20px auto;
+    animation: fadeIn 2s ease-out;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+}
+
+.ending-event-img {
+    width: 90%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 10px;
+    border: 3px solid #fff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    margin: 20px auto;
+    animation: fadeIn 2s ease-out;
+}
+
+.ending-next-btn {
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-family: 'Press Start 2P', cursive;
+    background: linear-gradient(to bottom, #ffcc00, #ffaa00);
+    border: none;
+    border-radius: 30px;
+    color: #000;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 204, 0, 0.4);
+    margin: 20px auto;
+    animation: fadeIn 1s ease-out;
+    pointer-events: auto;
+}
+
+.ending-next-btn:active {
+    transform: scale(0.95);
+}
+
+
+.birthday-frame {
+    background: rgba(40, 0, 60, 0.85);
+    border: 4px solid #dda0dd;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px auto;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(221, 160, 221, 0.6), inset 0 0 30px rgba(221, 160, 221, 0.2);
+    animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: sticky;
+    top: 20px;
+    z-index: 20;
+    width: 90%;
+}
+
+.birthday-frame::before,
+.birthday-frame::after {
+    content: "🌸 🌼 🌺";
+    position: absolute;
+    font-size: 24px;
+    width: 100%;
+    left: 0;
+    text-shadow: 0 0 5px rgba(255, 192, 203, 0.8);
+}
+
+.birthday-frame::before {
+    top: -20px;
+}
+
+.birthday-frame::after {
+    bottom: -20px;
+}
+
+.birthday-text {
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(18px, 5vw, 24px);
+    color: #ff69b4;
+    text-shadow: 2px 2px 0 #fff, 0 0 15px #ff1493;
+    animation: titlePulse 2s infinite;
+    line-height: 1.8;
+    /* Increased spacing between lines */
+}
+
+.staff-roll-container {
+    width: 100%;
+    margin-top: 50px;
+    padding-bottom: 200px;
+    /* Removed translate positioning to allow natural scrolling */
+    pointer-events: none;
+    z-index: 5;
+}
+
+@keyframes staffRoll {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-300%);
+    }
+
+    /* Scroll way up */
+}
+
+.staff-section {
+    margin-bottom: 80px;
+    text-align: center;
+    width: 100%;
+}
+
+.staff-role {
+    font-size: 14px;
+    color: #88c0d0;
+    letter-spacing: 0.2em;
+    margin-bottom: 10px;
+    font-family: 'Press Start 2P', monospace;
+    text-transform: uppercase;
+}
+
+.staff-name {
+    font-size: 24px;
+    color: #ffb7d5;
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    text-shadow: 0 0 10px rgba(255, 183, 213, 0.5);
+}
+
+.ending-msg {
+    margin-top: 100px;
+    font-size: 18px;
+    color: #fff;
+    line-height: 2;
+    text-align: center;
+    padding: 0 20px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+/* Title button final position */
+#ending-title-btn {
+    position: absolute;
+    bottom: 50px;
+    opacity: 0;
+    transition: opacity 1s;
+    pointer-events: none;
+    /* Initially disabled */
+    z-index: 100;
+}
+
+#ending-title-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+}
